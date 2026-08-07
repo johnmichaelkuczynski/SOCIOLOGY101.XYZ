@@ -1,0 +1,52 @@
+uploads = []
+
+[[generated]]
+id = "LlWeR1g6eMzYo8DqLObvT"
+uri = "file://attached_assets/generated_images/abstract_cinematic_dark_navy_2c15.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "zpoa4kJaFwLQ67_UaLoks"
+uri = "file://BLUEPRINT.md"
+type = "text"
+title = "QuantReason — App Blueprint"
+
+[[outputs]]
+id = "gBlmXbiu3K5FNCNv2fX9f"
+uri = "file://README.md"
+type = "text"
+title = "README — Baby Finite Math"
+
+[[outputs]]
+id = "IhlBFpvwhqNicclr5C_QR"
+uri = "file://youtube-description.md"
+type = "text"
+title = "YouTube Description — Baby Finite Math"
+
+[[outputs]]
+id = "Qpzwo_NPMNo_tjMm6_ppp"
+uri = "file://artifacts/course-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"
+
+[[outputs]]
+id = "lgKM-ZU17qFJwzMpONClr"
+uri = "file://attached_assets/generated_audio/promo_voiceover.mp3"
+type = "audio"
+title = "course promo voiceover"
+description = "Text-to-speech audio: Most online courses leave you alone the moment things get hard. Intro to Programming is built differently. Every student gets their own AI tutor — always on, always scoped to th…"
+
+[[outputs]]
+id = "pL5cuPQj2EA4BZEc-t85b"
+uri = "file://artifacts/course-promo/public/audio/promo_voiceover_2.mp3"
+type = "audio"
+title = "sociology promo voiceover"
+description = "Text-to-speech audio: What if one course could change how you see the entire social world? Welcome to Sociology 101. Every lesson comes with an AI tutor that has read exactly what you're reading. Ask…"
+
+[[outputs]]
+id = "xnCcOpnTFbRB9-72ZAvFt"
+uri = "file://artifacts/course-video/public/audio/walkthrough_voiceover.mp3"
+type = "audio"
+title = "sociology walkthrough voiceover"
+description = "Text-to-speech audio: This is Sociology 101 — a complete college course taught, tutored, and graded entirely by AI. Your dashboard tracks all four weeks — every lecture, assignment, and grade in one …"

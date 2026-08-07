@@ -1,0 +1,28 @@
+kind = "slides"
+previewPath = "/course-slides/"
+title = "Sociology 101 — Course Overview"
+description = "10-slide deck for prospective students showcasing the Sociology 101 course product experience — lessons, tutor, adaptive practice, assignments, diagnostics, and analytics."
+version = "1.0.0"
+id = "artifacts/course-slides"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/course-slides/" ]
+localPort = 22846
+
+[services.development]
+run = "pnpm --filter @workspace/course-slides run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/course-slides", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/course-slides/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22846"
+BASE_PATH = "/course-slides/"

@@ -1,0 +1,28 @@
+kind = "video"
+previewPath = "/course-promo/"
+title = "Sociology 101 — Course Promo"
+description = "~52-second YouTube promo video for Sociology 101, showcasing the five platform virtues with a professional voiceover."
+version = "1.0.0"
+id = "artifacts/course-promo"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/course-promo/" ]
+localPort = 22168
+
+[services.development]
+run = "pnpm --filter @workspace/course-promo run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/course-promo", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/course-promo/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22168"
+BASE_PATH = "/course-promo/"

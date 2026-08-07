@@ -1,0 +1,82 @@
+[
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a01",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Title.tsx",
+    "title": "Sociology 101",
+    "description": "Course title slide with hero image and subtitle",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a02",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02Problem.tsx",
+    "title": "Most intro courses are passive. This one isn't.",
+    "description": "Contrast between typical courses and this course's approach",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a03",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Curriculum.tsx",
+    "title": "Four weeks. 28 topics. One new perspective.",
+    "description": "2x2 grid of the four-week curriculum overview",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a04",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Lessons.tsx",
+    "title": "Lessons at three depths — read at your pace",
+    "description": "Short/Medium/Long depth selector with lecture mockup",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a05",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05Tutor.tsx",
+    "title": "Ask the AI tutor about exactly what you're reading",
+    "description": "AI tutor feature with starter question card mockups",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a06",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06Practice.tsx",
+    "title": "Adaptive practice that responds to you",
+    "description": "Practice problem card mockup with sociology scenario",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a07",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07Assignments.tsx",
+    "title": "13 graded assignments — homework, tests, and a final",
+    "description": "Big-number stat slide with 13 assignment breakdown",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a08",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08Diagnostics.tsx",
+    "title": "Know where you stand before and after",
+    "description": "Diagnostic instruments and four-phase timeline",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a09",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09Analytics.tsx",
+    "title": "See exactly where to focus next",
+    "description": "Topic accuracy bar chart with analytics feature bullets",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4f8e2a1c-3b5d-6e7f-8a9b-0c1d2e3f4a10",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10GetStarted.tsx",
+    "title": "Start learning today",
+    "description": "Closing slide with four getting-started bullets",
+    "speakerNotes": ""
+  }
+]

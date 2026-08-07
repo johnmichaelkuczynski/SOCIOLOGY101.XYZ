@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Academic Light Mode - Warm Parchment & Oxford Blue */
+  --color-primary: hsl(222 47% 20%); /* Oxford blue */
+  --color-secondary: hsl(44 20% 92%);
+  --color-accent: hsl(44 20% 90%);
+
+  --color-bg-light: hsl(44 20% 98%); /* Warm parchment */
+  --color-bg-dark: hsl(222 47% 20%);
+  --color-bg-muted: hsl(210 40% 96%);
+
+  --color-text-primary: hsl(222 47% 11%);
+  --color-text-secondary: hsl(215.4 16.3% 46.9%);
+  --color-text-muted: hsl(215.4 16.3% 46.9%);
+  --color-text-inverse: hsl(44 20% 98%);
+
+  --color-chart-teal: hsl(173 58% 39%);
+  --color-chart-amber: hsl(43 74% 66%);
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-muted: var(--color-bg-muted);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-chart-teal: var(--color-chart-teal);
+  --color-chart-amber: var(--color-chart-amber);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,47 @@
+Here's the full four-week breakdown in your app's structure.
+
+**Week 1 — Thinking like a programmer**
+*What a program is, how code runs, variables and types, expressions, input/output, and turning a plan into steps.*
+
+1.1 What a program is (and what a computer actually does)
+1.2 Computational thinking: decomposition, patterns, and steps
+1.3 Setting up: the interpreter, files, and running your first program
+1.4 Variables and assignment
+1.5 Data types: numbers, strings, and booleans
+1.6 Expressions and operators
+1.7 Input, output, and simple interaction
+
+**Week 2 — Control flow and logic**
+*Making decisions with conditionals, repeating work with loops, boolean logic, and building/debugging real logic.*
+
+2.1 Booleans and comparison
+2.2 Conditionals: if, elif, else
+2.3 Combining conditions: and, or, not
+2.4 While loops: repeating until done
+2.5 For loops and ranges
+2.6 Nested logic and loop patterns
+2.7 Reading errors and debugging your logic
+
+**Week 3 — Data structures and functions**
+*Organizing data with lists, strings, and dictionaries, and writing reusable functions with parameters and return values.*
+
+3.1 Lists: storing many values
+3.2 Iterating over collections
+3.3 Strings as sequences: slicing and methods
+3.4 Dictionaries: key–value data
+3.5 Defining functions
+3.6 Parameters, arguments, and return values
+3.7 Scope and why functions keep code clean
+
+**Week 4 — Building real programs**
+*Files, errors, algorithmic thinking, and putting it all together into a small working project.*
+
+4.1 Reading and writing files
+4.2 Handling errors gracefully (try / except)
+4.3 Algorithms: searching and sorting basics
+4.4 Efficiency: why some solutions are faster
+4.5 Organizing larger programs (modules and reuse)
+4.6 A guide to your first project
+4.7 Where to go next: libraries and real-world Python
+
+Want me to add the matching **homework and test titles** (two homeworks + one week test per week, like your AI class) to complete the clone?
