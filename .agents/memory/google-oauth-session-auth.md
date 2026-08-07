@@ -29,3 +29,5 @@ Run `pnpm run typecheck:libs` before typechecking api-server after adding new ta
 Register the callback URI in Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client:
 - Dev: `https://<REPLIT_DEV_DOMAIN>/api/auth/google/callback`
 - Prod: `https://<deployed-domain>/api/auth/google/callback`
+
+**Anonymous metering (added Aug 2026):** `meterAnonymousUsage` in api-server auth.ts — counts non-GET requests per anonymous session (`session.anonUsage`, limit `FREE_ANON_ACTIONS`), skipped entirely in development and for authenticated users; past the limit responds 401 `{error:"login_required"}`. Mounted in routes/index.ts BEFORE courseRouter (course has AI POSTs: rewrite/examples). Client: React Query QueryCache/MutationCache onError in App.tsx + `requireLoginIfMetered(res)` helper in lib/auth.tsx for raw fetch() call sites (Diagnostics, Layout, LectureView) — both redirect to `/api/auth/google`. Client route guards (`protectedComponent`) were removed; the meter is the only gate.

@@ -59,6 +59,27 @@ export function useAuth(): AuthState {
 }
 
 // ---------------------------------------------------------------------------
+// requireLoginIfMetered — shared handler for raw fetch() calls.
+// When the server answers 401 { error: "login_required" } (anonymous free
+// allowance spent), send the visitor through Google sign-in. Returns true if
+// a redirect was started (callers should bail out).
+// ---------------------------------------------------------------------------
+
+export async function requireLoginIfMetered(res: Response): Promise<boolean> {
+  if (res.status !== 401) return false;
+  try {
+    const data = (await res.clone().json()) as { error?: string };
+    if (data?.error === "login_required") {
+      window.location.href = `${basePath}/api/auth/google`;
+      return true;
+    }
+  } catch {
+    // Not JSON — fall through.
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
 // Spinner — shown while the session check is in flight
 // ---------------------------------------------------------------------------
 

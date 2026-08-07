@@ -1,5 +1,10 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryCache,
+  MutationCache,
+} from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
@@ -19,12 +24,25 @@ import Grades from "@/pages/Grades";
 import AdminMode from "@/pages/AdminMode";
 import Administrative from "@/pages/Administrative";
 
-import { AuthProvider, useAuth, Spinner, protectedComponent } from "@/lib/auth";
+import { AuthProvider, useAuth, Spinner } from "@/lib/auth";
 import Landing from "@/pages/Landing";
 import { Redirect } from "wouter";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
-const queryClient = new QueryClient();
+
+// When the API says the anonymous free allowance is spent, send the visitor
+// through Google sign-in and bring them back to the page they were on.
+function handleLoginRequired(error: unknown) {
+  const err = error as { status?: number; data?: { error?: string } } | null;
+  if (err && err.status === 401 && err.data?.error === "login_required") {
+    window.location.href = `${basePath}/api/auth/google`;
+  }
+}
+
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: handleLoginRequired }),
+  mutationCache: new MutationCache({ onError: handleLoginRequired }),
+});
 
 function HomeRedirect() {
   const { loading, authenticated } = useAuth();
@@ -52,12 +70,12 @@ function Router() {
       <Route path="/admin" component={AdminMode} />
       <Route path="/administrative" component={Administrative} />
 
-      {/* ── Feedback routes — require login in production ── */}
-      {/* These are the routes where the app grades, tutors, or scores the user */}
-      <Route path="/assignments/:id/practice" component={protectedComponent(PracticeAssignment)} />
-      <Route path="/assignments/:id" component={protectedComponent(AssignmentRunner)} />
-      <Route path="/practice/topic/:topicId" component={protectedComponent(TopicPractice)} />
-      <Route path="/reasoning/:id" component={protectedComponent(ReasoningRunner)} />
+      {/* ── AI-powered routes — open to everyone; the server meters anonymous
+          usage and asks for Google sign-in once the free allowance is spent ── */}
+      <Route path="/assignments/:id/practice" component={PracticeAssignment} />
+      <Route path="/assignments/:id" component={AssignmentRunner} />
+      <Route path="/practice/topic/:topicId" component={TopicPractice} />
+      <Route path="/reasoning/:id" component={ReasoningRunner} />
 
       <Route component={NotFound} />
     </Switch>

@@ -125,7 +125,7 @@ export function setupAuth(app: Express) {
         const prodDomain = (process.env.REPLIT_DOMAINS || "")
           .split(",")[0]
           ?.trim();
-        return `https://${prodDomain || "sociology101.xyz"}${CALLBACK_PATH}`;
+        return `https://${prodDomain || "sociology101.ink"}${CALLBACK_PATH}`;
       }
       if (process.env.REPLIT_DEV_DOMAIN) {
         return `https://${process.env.REPLIT_DEV_DOMAIN}${CALLBACK_PATH}`;
@@ -142,8 +142,8 @@ export function setupAuth(app: Express) {
       [
         ...(process.env.REPLIT_DOMAINS || "").split(",").map((d) => d.trim()),
         process.env.REPLIT_DEV_DOMAIN || "",
-        "sociology101.xyz",
-        "www.sociology101.xyz",
+        "sociology101.ink",
+        "www.sociology101.ink",
         "localhost:5000",
       ]
         .filter(Boolean)
@@ -387,4 +387,36 @@ export const isAuthenticated: RequestHandler = (req, res, next) => {
     return next();
   }
   res.status(401).json({ error: "Not authenticated" });
+};
+
+// ---------------------------------------------------------------------------
+// Anonymous usage metering — visitors can use the app without signing in, but
+// AI-powered actions (practice generation, grading, tutoring, diagnostics)
+// count against a free allowance stored in their session. Past the limit the
+// API answers 401 { error: "login_required" } and the client sends them to
+// Google sign-in. Development never meters. Reads (GET/HEAD/OPTIONS) are
+// always free.
+// ---------------------------------------------------------------------------
+
+export const FREE_ANON_ACTIONS = 15;
+
+export const meterAnonymousUsage: RequestHandler = (req, res, next) => {
+  if (process.env.NODE_ENV === "development") return next();
+  if (req.isAuthenticated() && req.user) return next();
+  if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
+    return next();
+  }
+  const session = req.session as typeof req.session & { anonUsage?: number };
+  const used = (session.anonUsage ?? 0) + 1;
+  if (used > FREE_ANON_ACTIONS) {
+    res.status(401).json({
+      error: "login_required",
+      message:
+        "You've used up the free preview. Sign in with Google to keep going — it's free.",
+      freeLimit: FREE_ANON_ACTIONS,
+    });
+    return;
+  }
+  session.anonUsage = used;
+  next();
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, LogOut, Scale, GraduationCap, ShieldCheck, Search, KeyRound } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/lib/auth";
+import { useAuth, requireLoginIfMetered } from "@/lib/auth";
 import { useAdminMode } from "@/lib/adminMode";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -112,6 +112,7 @@ function TopBar() {
             `${basePath}/api/diagnostics/expand-lectures?level=${job.level}&id=${job.id}`,
             { method: "POST" },
           );
+          if (await requireLoginIfMetered(res)) return;
           if (!res.ok) {
             failed++;
             continue;
@@ -138,6 +139,7 @@ function TopBar() {
     setResetting(true);
     try {
       const res = await fetch("/api/diagnostics/reset", { method: "POST" });
+      if (await requireLoginIfMetered(res)) return;
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       await qc.invalidateQueries();
       setLocation("/");

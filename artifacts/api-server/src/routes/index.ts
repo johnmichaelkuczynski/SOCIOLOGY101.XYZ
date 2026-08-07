@@ -10,10 +10,15 @@ import analyticsRouter from "./analytics";
 import diagnosticsRouter from "./diagnostics";
 import reasoningRouter from "./reasoning";
 import adminRouter from "./admin";
+import { meterAnonymousUsage } from "../auth";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+// Everything below can perform AI work (generation, grading, tutoring) on
+// writes — anonymous visitors get a free allowance, then must sign in.
+// Reads (GET/HEAD) are always free, so course browsing is unaffected.
+router.use(meterAnonymousUsage);
 router.use(courseRouter);
 router.use(assignmentsRouter);
 router.use(practiceRouter);

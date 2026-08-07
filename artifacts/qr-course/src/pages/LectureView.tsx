@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { requireLoginIfMetered } from "@/lib/auth";
 import {
   useGetLecture,
   useGetWeek,
@@ -202,6 +203,7 @@ export default function LectureView() {
         `${import.meta.env.BASE_URL}api/diagnostics/expand-lectures?level=${target}&id=${lecture.id}`,
         { method: "POST" },
       );
+      if (await requireLoginIfMetered(res)) return;
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as { updated?: number; failed?: number };
       if (!data.updated) {

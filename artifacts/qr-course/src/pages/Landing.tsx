@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Search,
 } from "lucide-react";
+import { Link } from "wouter";
 
 const features = [
   {
@@ -120,6 +121,14 @@ export default function Landing() {
                 Sign in with Google to start
               </button>
             </a>
+            <Link href="/dashboard">
+              <button
+                className="px-6 py-3 rounded-md text-base font-medium border border-border hover:bg-secondary transition-colors"
+                data-testid="button-cta-explore"
+              >
+                Explore without signing in
+              </button>
+            </Link>
           </div>
         </section>
 
