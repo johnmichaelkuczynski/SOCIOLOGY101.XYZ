@@ -77,7 +77,7 @@ export const storage = {
     return rowToUser(row!);
   },
 
-  async recordVisit(userId: number, email: string | null): Promise<void> {
+  async recordVisit(userId: number | null, email: string | null): Promise<void> {
     await db.insert(visitsTable).values({ userId, email });
   },
 

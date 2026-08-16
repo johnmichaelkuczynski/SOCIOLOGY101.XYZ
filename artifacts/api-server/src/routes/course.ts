@@ -368,6 +368,144 @@ router.post(
   },
 );
 
+// ---------------------------------------------------------------------------
+// Course download — the full set of lectures (short versions) plus a sample of
+// homeworks and exams, as a single TXT or PDF file. Free (GET, unmetered).
+// ---------------------------------------------------------------------------
+
+type DownloadSection = { heading: string; paragraphs: string[] };
+
+/** Turn lecture markdown into plain readable text for TXT/PDF downloads. */
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^\s*[-*]\s+/gm, "• ");
+}
+
+async function buildCourseDownload(): Promise<DownloadSection[]> {
+  const sections: DownloadSection[] = [];
+
+  for (const weekNumber of [1, 2, 3, 4]) {
+    const meta = WEEK_TITLES[weekNumber]!;
+    sections.push({ heading: meta.title, paragraphs: [meta.summary] });
+
+    const lectures = await db
+      .select({ title: lecturesTable.title, body: lecturesTable.body })
+      .from(lecturesTable)
+      .where(eq(lecturesTable.weekNumber, weekNumber))
+      .orderBy(asc(lecturesTable.id));
+
+    for (const lecture of lectures) {
+      sections.push({
+        heading: lecture.title,
+        paragraphs: stripMarkdown(lecture.body)
+          .split(/\n{2,}/)
+          .map((p) => p.trim())
+          .filter(Boolean),
+      });
+    }
+  }
+
+  // A sample of practice work: the first homework of each week plus the final.
+  const assignments = await db
+    .select()
+    .from(assignmentsTable)
+    .orderBy(asc(assignmentsTable.weekNumber), asc(assignmentsTable.position));
+  const sample: typeof assignments = [];
+  for (const weekNumber of [1, 2, 3, 4]) {
+    const hw = assignments.find(
+      (a) => a.weekNumber === weekNumber && a.kind === "homework",
+    );
+    if (hw) sample.push(hw);
+  }
+  const exams = assignments.filter((a) => a.kind === "test" || a.kind === "midterm");
+  if (exams[0]) sample.push(exams[0]);
+  const final = assignments.find((a) => a.kind === "final");
+  if (final) sample.push(final);
+
+  for (const a of sample) {
+    const problems = await db.execute(
+      sql`select prompt from problems where assignment_id = ${a.id} order by position asc`,
+    );
+    const prompts = (problems.rows as Array<{ prompt: string }>).map(
+      (p, i) => `${i + 1}. ${p.prompt}`,
+    );
+    sections.push({
+      heading: `Sample — ${a.title}`,
+      paragraphs: [
+        ...(a.instructions ? [a.instructions] : []),
+        ...prompts,
+      ],
+    });
+  }
+
+  return sections;
+}
+
+router.get("/course/download", async (req, res): Promise<void> => {
+  const format = req.query.format === "pdf" ? "pdf" : "txt";
+  try {
+    const sections = await buildCourseDownload();
+
+    if (format === "txt") {
+      const text = [
+        "SOCIOLOGY 101 — COURSE PACK",
+        "Lectures (short versions) plus sample homeworks and exams.",
+        "",
+        ...sections.flatMap((s) => [
+          s.heading.toUpperCase(),
+          "-".repeat(Math.min(s.heading.length, 72)),
+          ...s.paragraphs.flatMap((p) => [p, ""]),
+          "",
+        ]),
+      ].join("\n");
+      res.setHeader("Content-Type", "text/plain; charset=utf-8");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="sociology-101-course.txt"',
+      );
+      res.send(text);
+      return;
+    }
+
+    const { default: PDFDocument } = await import("pdfkit");
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="sociology-101-course.pdf"',
+    );
+    const doc = new PDFDocument({ margin: 54, bufferPages: true });
+    doc.pipe(res);
+    doc.font("Times-Bold").fontSize(22).text("Sociology 101 — Course Pack");
+    doc.moveDown(0.3);
+    doc
+      .font("Times-Roman")
+      .fontSize(11)
+      .fillColor("#555555")
+      .text("Lectures (short versions) plus sample homeworks and exams.");
+    doc.fillColor("black").moveDown(1);
+    for (const s of sections) {
+      if (doc.y > doc.page.height - 140) doc.addPage();
+      doc.font("Times-Bold").fontSize(14).text(s.heading);
+      doc.moveDown(0.4);
+      doc.font("Times-Roman").fontSize(11);
+      for (const p of s.paragraphs) {
+        doc.text(p, { paragraphGap: 6 });
+      }
+      doc.moveDown(0.8);
+    }
+    doc.end();
+  } catch (error) {
+    console.error("Course download error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to build course download" });
+    }
+  }
+});
+
 router.get("/course/topics", async (_req, res) => {
   const rows = await db
     .select()

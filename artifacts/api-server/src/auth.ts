@@ -398,7 +398,32 @@ export const isAuthenticated: RequestHandler = (req, res, next) => {
 // always free.
 // ---------------------------------------------------------------------------
 
-export const FREE_ANON_ACTIONS = 15;
+// Anonymous visitors get roughly two paragraphs of AI-generated output for
+// free, measured in characters of text the API sends back on metered (write)
+// requests. Past that, they must sign in with Google.
+export const FREE_ANON_AI_CHARS = 2200;
+
+/**
+ * Sum the length of substantial string values in a JSON response body.
+ * Short strings (ids, statuses, titles, echoed short answers) are ignored so
+ * the allowance is consumed by generated prose, not metadata.
+ */
+const MIN_METERED_STRING = 120;
+function countResponseChars(value: unknown): number {
+  if (typeof value === "string") {
+    return value.length >= MIN_METERED_STRING ? value.length : 0;
+  }
+  if (Array.isArray(value)) {
+    return value.reduce<number>((s, v) => s + countResponseChars(v), 0);
+  }
+  if (value && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>).reduce<number>(
+      (s, v) => s + countResponseChars(v),
+      0
+    );
+  }
+  return 0;
+}
 
 export const meterAnonymousUsage: RequestHandler = (req, res, next) => {
   if (process.env.NODE_ENV === "development") return next();
@@ -406,17 +431,46 @@ export const meterAnonymousUsage: RequestHandler = (req, res, next) => {
   if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
     return next();
   }
-  const session = req.session as typeof req.session & { anonUsage?: number };
-  const used = (session.anonUsage ?? 0) + 1;
-  if (used > FREE_ANON_ACTIONS) {
+  const session = req.session as typeof req.session & { anonAiChars?: number };
+  if ((session.anonAiChars ?? 0) >= FREE_ANON_AI_CHARS) {
     res.status(401).json({
       error: "login_required",
       message:
         "You've used up the free preview. Sign in with Google to keep going — it's free.",
-      freeLimit: FREE_ANON_ACTIONS,
+      freeLimit: FREE_ANON_AI_CHARS,
     });
     return;
   }
-  session.anonUsage = used;
+  // Accumulate the size of AI output actually delivered to this session.
+  const originalJson = res.json.bind(res);
+  res.json = ((body: unknown) => {
+    if (res.statusCode < 400) {
+      session.anonAiChars = (session.anonAiChars ?? 0) + countResponseChars(body);
+    }
+    return originalJson(body);
+  }) as typeof res.json;
+  next();
+};
+
+// Count each new session once as a unique visitor (production only, so dev
+// work doesn't pollute the owner's analytics).
+// In-process guard against the parallel-first-request race: a new session's
+// simultaneous API calls all see visitorCounted=false before the session
+// persists, so dedupe on the session id as well.
+const recentlyCountedSessions = new Set<string>();
+
+export const recordUniqueVisitor: RequestHandler = (req, _res, next) => {
+  if (process.env.NODE_ENV === "development") return next();
+  const session = req.session as typeof req.session & { visitorCounted?: boolean };
+  const sid = req.sessionID;
+  if (!session.visitorCounted && sid && !recentlyCountedSessions.has(sid)) {
+    session.visitorCounted = true;
+    recentlyCountedSessions.add(sid);
+    if (recentlyCountedSessions.size > 5000) recentlyCountedSessions.clear();
+    const email = req.isAuthenticated() && req.user ? req.user.email : null;
+    storage
+      .recordVisit(null, email ?? null)
+      .catch((err) => console.error("Failed to record visitor:", err));
+  }
   next();
 };

@@ -8,6 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { Link } from "wouter";
+import { TopicList, DownloadCourseButtons } from "@/components/TopicList";
 
 const features = [
   {
@@ -42,37 +43,6 @@ const features = [
   },
 ];
 
-const topics = [
-  { n: "1.1", title: "The sociological imagination: private troubles and public issues" },
-  { n: "1.2", title: "Seeing the social: how structure shapes everyday choices" },
-  { n: "1.3", title: "The founding thinkers: Marx, Durkheim, and Weber" },
-  { n: "1.4", title: "Three lenses: functionalism, conflict, and interactionism" },
-  { n: "1.5", title: "Doing sociology: research questions and evidence" },
-  { n: "1.6", title: "Methods: surveys, interviews, ethnography, and experiments" },
-  { n: "1.7", title: "Reading data critically: correlation, cause, and bias" },
-  { n: "2.1", title: "Culture: symbols, language, values, and norms" },
-  { n: "2.2", title: "Subcultures, countercultures, and cultural change" },
-  { n: "2.3", title: "Socialization: becoming a member of society" },
-  { n: "2.4", title: "Agents of socialization: family, school, peers, and media" },
-  { n: "2.5", title: "Roles, status, and the self in social life" },
-  { n: "2.6", title: "Groups, networks, and organizations" },
-  { n: "2.7", title: "Bureaucracy and the rationalization of modern life" },
-  { n: "3.1", title: "Deviance: how societies define and respond to rule-breaking" },
-  { n: "3.2", title: "Social control, labeling, and the making of crime" },
-  { n: "3.3", title: "Social stratification: class and inequality" },
-  { n: "3.4", title: "Life chances, mobility, and the reproduction of advantage" },
-  { n: "3.5", title: "Race and ethnicity as social constructions" },
-  { n: "3.6", title: "Gender, sexuality, and the social order" },
-  { n: "3.7", title: "Intersecting inequalities in everyday institutions" },
-  { n: "4.1", title: "Family: a changing social institution" },
-  { n: "4.2", title: "Education and the sorting of opportunity" },
-  { n: "4.3", title: "Religion, meaning, and social solidarity" },
-  { n: "4.4", title: "Economy, work, and the changing labor market" },
-  { n: "4.5", title: "Population, cities, and the environment" },
-  { n: "4.6", title: "Social movements and collective action" },
-  { n: "4.7", title: "Global change: where the sociological perspective leads next" },
-];
-
 export default function Landing() {
   return (
     <div className="min-h-[100dvh] bg-background text-foreground flex flex-col">
@@ -98,7 +68,13 @@ export default function Landing() {
       </header>
 
       <main className="flex-1">
-        <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
+        <div className="px-6 pt-6 flex flex-col md:flex-row md:items-start gap-8">
+          <aside className="shrink-0">
+            <TopicList />
+            <DownloadCourseButtons />
+          </aside>
+          <div className="flex-1 min-w-0">
+        <section className="max-w-4xl mx-auto px-6 pt-14 pb-16 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium mb-6">
             <BarChart3 className="w-3.5 h-3.5" />
             A complete, four-week introduction to the sociological perspective
@@ -149,29 +125,8 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="max-w-4xl mx-auto px-6 pb-24">
-          <h2 className="text-center font-serif font-semibold text-xl mb-6">
-            The Curriculum
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {topics.map((t) => (
-              <div
-                key={t.n}
-                className="flex items-center gap-4 rounded-lg border border-border bg-card p-5"
-              >
-                <div className="w-10 h-10 shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-serif font-bold text-sm">
-                  {t.n}
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                    Topic {t.n}
-                  </div>
-                  <div className="font-medium">{t.title}</div>
-                </div>
-              </div>
-            ))}
           </div>
-        </section>
+        </div>
       </main>
 
       <footer className="border-t border-border px-6 py-6 text-center text-sm text-muted-foreground">

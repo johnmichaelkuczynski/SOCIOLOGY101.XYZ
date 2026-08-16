@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { ReasoningCallout } from "@/components/ReasoningCallout";
+import { TopicList, DownloadCourseButtons } from "@/components/TopicList";
 
 export default function Dashboard() {
   const { data: overview, isLoading: isLoadingOverview } = useGetCourseOverview();
@@ -14,6 +15,12 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="p-8 max-w-6xl mx-auto w-full flex flex-col gap-8">
+        <div className="flex flex-col md:flex-row md:items-start gap-8">
+          <aside className="shrink-0">
+            <TopicList />
+            <DownloadCourseButtons />
+          </aside>
+          <div className="flex-1 min-w-0 flex flex-col gap-8">
         <div>
           <h1 className="text-3xl font-serif font-bold text-primary mb-2">
             {overview ? overview.title : <Skeleton className="h-9 w-64" />}
@@ -102,6 +109,8 @@ export default function Dashboard() {
                 )}
               </CardContent>
             </Card>
+          </div>
+        </div>
           </div>
         </div>
       </div>
