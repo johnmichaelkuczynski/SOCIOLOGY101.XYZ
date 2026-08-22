@@ -1,6 +1,5 @@
 - [Course answer-key QC diagnostic](course-qc-diagnostic.md) — LLM key-legitimacy checks must judge against the course's own lecture text (not generic knowledge), or correct course-specific keys false-flag.
-- [Clerk + wouter auth](clerk-wouter-auth.md) — protected-route HOC for wouter must use ComponentType<any> (not Record-constrained); base path `/` stays a public landing, dashboard lives at `/dashboard`.
-- [API auth model](api-auth-model.md) — single-user app: API has NO per-route server authz; Clerk gating is frontend-only. "Admin mode" + skipDetection are intentionally client-side flags, not a trust boundary.
+- [Fully public course](public-access.md) — explicit mandate: no login, account identity, auth-gated routes, anonymous quotas, or sign-in redirects anywhere.
 - [Tutor starter-question style](tutor-starter-questions.md) — lecture starter questions must ALWAYS be concrete-case application; never definition/abstract/comparison questions (user mandate).
 - [Course content reseed](course-content-reseed.md) — seeded data migrations must self-heal via a content marker + replace-in-transaction; "seed if empty" strands old content in existing/prod DBs (prod writes are read-only).
 - [DATABASE_URL override](database-url-override.md) — app DB resolves to platform `helium/heliumdb`, which overrides a user-set DATABASE_URL secret; checkDatabase() can report "not provisioned" while the app still has a working DB.
@@ -12,8 +11,4 @@
 - [Subject conversion blind spots](subject-conversion-blindspots.md) — when rebranding the course subject, video artifacts also hide subject copy in index.html OG/Twitter meta + a per-artifact YOUTUBE_DESCRIPTION.md, not just scene .tsx files.
 - [OpenAPI adjacent-op edits](openapi-adjacent-op-edits.md) — inserting an op before another can orphan its response `content` block & flip a generated client return type; include the full responses block in old_string and verify generated Promise<…> after codegen.
 - [Video content verification](video-content-verification.md) — screenshots reload a video-js artifact to scene 0; verify multi-scene walkthroughs by grepping Scene*.tsx for required real copy, not screenshots.
-- [Real screenshot capture](real-screenshot-capture.md) — to show the real product in course-video, temporarily bypass the Clerk protectedComponent wrapper (pages have no user hooks), screenshot every page, then revert.
 - [DB schema push bootstrap](db-schema-push-bootstrap.md) — api-server seed only inserts rows, never creates tables; run `pnpm --filter @workspace/db run push` before restart or every course route 500s on "relation does not exist".
-- [Google OAuth + session auth](google-oauth-session-auth.md) — replacing Clerk with Passport.js + express-session; CALLBACK_PATH must be /api/auth/google/callback (not /auth/) for dev proxy routing; lib composite rebuild (typecheck:libs) required before api-server typecheck sees new schema tables.
-- [Anon metering + visitor counting](anon-metering-visitors.md) — char-based free preview (~2 paragraphs) via res.json wrapper; session-id Set fixes visit-count race; pdfkit needs esbuild external.
-- [connect-pg-simple + esbuild](connect-pg-simple-esbuild.md) — never use createTableIfMissing:true when api-server is bundled; table.sql asset is excluded from the bundle, causing ENOENT on startup that silently breaks all sessions.

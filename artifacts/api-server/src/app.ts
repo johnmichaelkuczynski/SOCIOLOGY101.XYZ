@@ -3,7 +3,6 @@ import cors from "cors";
 import pinoHttp from "pino-http";
 import path from "node:path";
 import fs from "node:fs";
-import { setupAuth } from "./auth";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -33,14 +32,9 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Unconditional health probe — mounted BEFORE session middleware so it
-// always returns 200 even while the pg session store is still connecting.
-// Replit's deployment healthcheck hits /api/healthz on startup.
+// Unconditional health probes for Replit deployment startup checks.
 app.get("/api/healthz", (_req, res) => res.sendStatus(200));
 app.get("/api/health", (_req, res) => res.sendStatus(200));
-
-// Google OAuth + session-based authentication
-setupAuth(app);
 
 app.use("/api", router);
 

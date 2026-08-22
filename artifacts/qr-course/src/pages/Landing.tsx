@@ -55,16 +55,14 @@ export default function Landing() {
             Sociology 101
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <a href="/api/auth/google">
-            <button
-              className="px-4 py-2 rounded-md text-sm font-medium border border-border hover:bg-secondary transition-colors"
-              data-testid="button-sign-in"
-            >
-              Sign in with Google
-            </button>
-          </a>
-        </div>
+        <Link href="/dashboard">
+          <button
+            className="px-4 py-2 rounded-md text-sm font-medium border border-border hover:bg-secondary transition-colors"
+            data-testid="button-open-course"
+          >
+            Open course
+          </button>
+        </Link>
       </header>
 
       <main className="flex-1">
@@ -89,20 +87,12 @@ export default function Landing() {
             discipline.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <a href="/api/auth/google">
+            <Link href="/dashboard">
               <button
                 className="px-6 py-3 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 data-testid="button-cta-start"
               >
-                Sign in with Google to start
-              </button>
-            </a>
-            <Link href="/dashboard">
-              <button
-                className="px-6 py-3 rounded-md text-base font-medium border border-border hover:bg-secondary transition-colors"
-                data-testid="button-cta-explore"
-              >
-                Explore without signing in
+                Start the course
               </button>
             </Link>
           </div>

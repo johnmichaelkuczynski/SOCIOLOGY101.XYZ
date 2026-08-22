@@ -5,16 +5,7 @@ import { RunGraderLabResponse } from "@workspace/api-zod";
 import { gradeAnswer } from "../lib/grading";
 import { chatJson } from "../lib/ai";
 
-import { isAdmin } from "../auth";
-
 const router: IRouter = Router();
-
-// Grader-lab runs expensive model generation/grading — owner only in
-// production (development is unauthenticated by design).
-router.use("/admin", (req, res, next) => {
-  if (process.env.NODE_ENV === "development") return next();
-  return isAdmin(req, res, next);
-});
 
 interface GeneratedCase {
   label: string;

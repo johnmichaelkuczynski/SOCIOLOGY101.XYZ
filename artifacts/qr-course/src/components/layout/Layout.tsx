@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, LogOut, Scale, GraduationCap, ShieldCheck, Search, KeyRound } from "lucide-react";
+import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuth, requireLoginIfMetered } from "@/lib/auth";
 import { useAdminMode } from "@/lib/adminMode";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const ADMIN_EMAIL = "johnmichaelkuczynski@gmail.com";
-
 export function Sidebar() {
   const [location] = useLocation();
   const [adminMode] = useAdminMode();
-  const { user } = useAuth();
-  const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL;
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -23,9 +18,6 @@ export function Sidebar() {
     { href: "/analytics", label: "Analytics", icon: BarChart3 },
     ...(adminMode
       ? [{ href: "/admin", label: "Administrator", icon: ShieldCheck }]
-      : []),
-    ...(isAdmin
-      ? [{ href: "/administrative", label: "Administrative", icon: KeyRound }]
       : []),
   ];
 
@@ -74,19 +66,9 @@ function TopBar() {
   const active = location.startsWith("/diagnostics");
   const [adminMode, setAdminMode] = useAdminMode();
   const qc = useQueryClient();
-  const { user } = useAuth();
   const [resetting, setResetting] = useState(false);
   const [expanding, setExpanding] = useState(false);
   const [expandProgress, setExpandProgress] = useState<string | null>(null);
-
-  async function handleLogout() {
-    try {
-      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-    } catch {
-      // ignore
-    }
-    window.location.href = basePath || "/";
-  }
 
   async function handleExpandLectures() {
     setExpanding(true);
@@ -112,7 +94,6 @@ function TopBar() {
             `${basePath}/api/diagnostics/expand-lectures?level=${job.level}&id=${job.id}`,
             { method: "POST" },
           );
-          if (await requireLoginIfMetered(res)) return;
           if (!res.ok) {
             failed++;
             continue;
@@ -139,7 +120,6 @@ function TopBar() {
     setResetting(true);
     try {
       const res = await fetch("/api/diagnostics/reset", { method: "POST" });
-      if (await requireLoginIfMetered(res)) return;
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       await qc.invalidateQueries();
       setLocation("/");
@@ -149,8 +129,6 @@ function TopBar() {
       setResetting(false);
     }
   }
-
-  const displayName = user?.email ?? user?.displayName ?? "Account";
 
   return (
     <div className="sticky top-0 z-10 flex items-center justify-end gap-2 px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
@@ -202,26 +180,6 @@ function TopBar() {
         {adminMode ? "Admin: On" : "Admin: Off"}
       </button>
 
-      <div className="mx-1 h-6 w-px bg-border" />
-
-      {user && (
-        <span
-          className="hidden sm:inline text-sm text-muted-foreground max-w-[12rem] truncate"
-          title={displayName}
-          data-testid="text-user-email"
-        >
-          {displayName}
-        </span>
-      )}
-      <button
-        onClick={handleLogout}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium border border-border hover:bg-secondary"
-        data-testid="button-sign-out"
-        title="Sign out"
-      >
-        <LogOut className="w-4 h-4" />
-        Sign out
-      </button>
     </div>
   );
 }

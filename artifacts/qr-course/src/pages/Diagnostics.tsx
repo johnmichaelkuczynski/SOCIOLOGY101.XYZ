@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { CheckCircle2, XCircle, Loader2, PlayCircle, Activity, ShieldCheck } from "lucide-react";
-import { requireLoginIfMetered } from "@/lib/auth";
 
 type Step = {
   name: string;
@@ -109,7 +108,6 @@ export default function Diagnostics() {
         headers: { "content-type": "application/json" },
         body: "{}",
       });
-      if (await requireLoginIfMetered(r)) return;
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       setSynthResult(await r.json());
     } catch (e) {
@@ -129,7 +127,6 @@ export default function Diagnostics() {
         headers: { "content-type": "application/json" },
         body: "{}",
       });
-      if (await requireLoginIfMetered(r)) return;
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       setQcResult(await r.json());
     } catch (e) {

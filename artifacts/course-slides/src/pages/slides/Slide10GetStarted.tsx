@@ -28,7 +28,7 @@ export default function Slide10GetStarted() {
           <div className="flex items-start gap-[1.5vw]">
             <div className="w-[0.45vw] h-[0.45vw] rounded-full bg-primary mt-[1vh] shrink-0" />
             <p className="font-body text-[2vw] text-text leading-relaxed">
-              Sign in with Google — no account setup, no credit card
+              Open the course instantly — no account setup, no credit card
             </p>
           </div>
           <div className="flex items-start gap-[1.5vw]">
